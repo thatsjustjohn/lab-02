@@ -60,10 +60,16 @@ function createImageJSONObjects(imgArr) {
 //filter functionality
 $('select').on('change', function() {
   let keyword = $(this).val();
-  $('section')
-    .children()
-    .show();
-  $(`.${keyword}`).hide();
+  if (keyword === 'default') {
+    $('section')
+      .children()
+      .show();
+  } else {
+    $('section')
+      .children()
+      .hide();
+    $(`.${keyword}`).show();
+  }
 });
 
 //render functions depending on keyword or default
