@@ -34,7 +34,7 @@ function createFilter() {
 }
 
 //use AJAX to pull in data and render to DOM
-$.get('../data/page-1.json').done(data => {
+$.get('data/page-1.json').done(data => {
   createImageJSONObjects(data);
   createFilter();
   renderAllImages();
