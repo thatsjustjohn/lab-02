@@ -1,4 +1,11 @@
-div img {
-  height: 300px;
-  width: 300px;
+h1 {
+  font-family: fantasy;
+  font-size: 3em;
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+p {
+  font-family: 'ZCOOL KuaiLe', cursive;
 }
