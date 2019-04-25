@@ -2,8 +2,9 @@
 console.log('linked');
 
 let images = [];
-const keywords = [];
+let keywords = [];
 let template = $('#photo-template');
+let currentJSONFilePath = 'data/page-2.json';
 
 //create object constructor
 const ImageJSONObject = function(link, title, keyword, horns, description) {
@@ -28,21 +29,26 @@ const ImageJSONObject = function(link, title, keyword, horns, description) {
 
 function createFilter() {
   let parent = $('select')[0];
+  $('option:not(:first-child)').remove();
   keywords.forEach(element => {
     parent.append(new Option(element, element));
   });
 }
 
 //use AJAX to pull in data and render to DOM
-$.get('data/page-1.json').done(data => {
-  createImageJSONObjects(data);
-  createFilter();
-  renderAllImages();
-});
+function setupPageFromData(dataFilePath){
+  $.get(dataFilePath).done(data => {
+    createImageJSONObjects(data);
+    createFilter();
+    renderAllImages();
+  });
+}
+
 
 //modify template with new data.
 function createImageJSONObjects(imgArr) {
-  console.log('running');
+  images = [];
+  keywords = [];
   imgArr.forEach(element => {
     if (!keywords.includes(element.keyword)) keywords.push(element.keyword);
     images.push(
@@ -56,7 +62,17 @@ function createImageJSONObjects(imgArr) {
     );
   });
 }
+//render functions depending on keyword or default
+function renderAllImages() {
+  template.empty();
+  images.forEach(e => {
+    e.renderImageHTML();
+  });
+}
 
+setupPageFromData(currentJSONFilePath);
+
+// EVENT HANDLERS
 //filter functionality
 $('select').on('change', function() {
   let keyword = $(this).val();
@@ -72,10 +88,11 @@ $('select').on('change', function() {
   }
 });
 
-//render functions depending on keyword or default
-function renderAllImages() {
-  template.empty();
-  images.forEach(e => {
-    e.renderImageHTML();
-  });
-}
+$('.pagination').on('click', function(e) {
+  e.preventDefault();
+  console.log(currentJSONFilePath);
+  currentJSONFilePath = (currentJSONFilePath === 'data/page-1.json' ? 'data/page-2.json' : 'data/page-1.json');
+  console.log(currentJSONFilePath);
+  setupPageFromData(currentJSONFilePath);
+});
+
