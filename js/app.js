@@ -3,8 +3,7 @@ console.log('linked');
 
 let images = [];
 let keywords = [];
-let template = $('#photo-template');
-let currentJSONFilePath = 'data/page-2.json';
+let currentJSONFilePath = 'data/page-1.json';
 
 //create object constructor
 const ImageJSONObject = function(link, title, keyword, horns, description) {
@@ -13,18 +12,6 @@ const ImageJSONObject = function(link, title, keyword, horns, description) {
   this.keyword = keyword;
   this.horns = horns;
   this.description = description;
-
-  this.renderImageHTML = function() {
-    template.append(
-      $('<div></div>')
-        .attr('class', this.keyword)
-        .append(
-          $('<h2></h2>').text(this.title),
-          $('<img />').attr({ src: this.image_url, alt: this.title }),
-          $('<p></p>').text(this.description)
-        )
-    );
-  };
 };
 
 function createFilter() {
@@ -40,7 +27,7 @@ function setupPageFromData(dataFilePath){
   $.get(dataFilePath).done(data => {
     createImageJSONObjects(data);
     createFilter();
-    renderAllImages();
+    renderAllImages(data);
   });
 }
 
@@ -63,14 +50,15 @@ function createImageJSONObjects(imgArr) {
   });
 }
 //render functions depending on keyword or default
-function renderAllImages() {
-  template.empty();
-  images.forEach(e => {
-    e.renderImageHTML();
-  });
+function renderAllImages(data) {
+  const imageRenderer = Handlebars.compile($('#div-template').text());
+  let sectionPT = $('#photo-template');
+  sectionPT.empty();
+  data.forEach(image => sectionPT.append(imageRenderer(image)));
 }
 
 setupPageFromData(currentJSONFilePath);
+
 
 // EVENT HANDLERS
 //filter functionality
