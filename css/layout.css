@@ -8,16 +8,23 @@ footer {
 }
 
 select {
-  margin: 10px auto;
-  margin-left: 40%;
   font-size: 20pt;
 }
 
 section {
   display: flex;
-  flex-flow: row wrap;
   justify-content: space-around;
   height: 100%;
+}
+
+header section{
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+}
+
+main section {
+  flex-flow: row wrap;
 }
 
 div {

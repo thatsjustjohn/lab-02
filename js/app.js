@@ -27,7 +27,9 @@ function setupPageFromData(dataFilePath){
   $.get(dataFilePath).done(data => {
     createImageJSONObjects(data);
     createFilter();
-    renderAllImages(data);
+    $('input')[0].checked = true;
+    $('input')[1].checked = false;
+    renderAllImages(sortImagesByChecked(true, false));
   });
 }
 
@@ -50,12 +52,25 @@ function createImageJSONObjects(imgArr) {
   });
 }
 //render functions depending on keyword or default
-function renderAllImages(data) {
+function renderAllImages(images) {
   const imageRenderer = Handlebars.compile($('#div-template').text());
   let sectionPT = $('#photo-template');
   sectionPT.empty();
-  data.forEach(image => sectionPT.append(imageRenderer(image)));
+  images.forEach(image => sectionPT.append(imageRenderer(image)));
 }
+
+const sortImagesByChecked = (title, horns) => {
+  let tempImages = images.slice(0);
+  if(title && !horns){
+    tempImages.sort( (a, b) => a.title.localeCompare(b.title, {sensitivity: 'base'}));
+  }else if(horns && !title){
+    tempImages.sort( (a, b) => a.horns - b.horns);
+  }else if(horns && title){
+    tempImages.sort( (a, b) => (a.horns - b.horns) !== 0 ? a.horns - b.horns : a.title.localeCompare(b.title, {sensitivity: 'base'}));
+  }
+  return tempImages;
+};
+
 
 setupPageFromData(currentJSONFilePath);
 
@@ -65,11 +80,11 @@ setupPageFromData(currentJSONFilePath);
 $('select').on('change', function() {
   let keyword = $(this).val();
   if (keyword === 'default') {
-    $('section')
+    $('#photo-template')
       .children()
       .show();
   } else {
-    $('section')
+    $('#photo-template')
       .children()
       .hide();
     $(`.${keyword}`).show();
@@ -84,3 +99,8 @@ $('.pagination').on('click', function(e) {
   setupPageFromData(currentJSONFilePath);
 });
 
+
+$('input').on('click',function () {
+  renderAllImages(sortImagesByChecked($('input')[0].checked,$('input')[1].checked));
+  //maybe add logic to only alow one check incase the TA's get sad.
+});
