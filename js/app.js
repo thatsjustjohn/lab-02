@@ -30,6 +30,7 @@ function setupPageFromData(dataFilePath){
     $('input')[0].checked = true;
     $('input')[1].checked = false;
     renderAllImages(sortImagesByChecked(true, false));
+    keywordHideImages();
   });
 }
 
@@ -57,6 +58,8 @@ function renderAllImages(images) {
   let sectionPT = $('#photo-template');
   sectionPT.empty();
   images.forEach(image => sectionPT.append(imageRenderer(image)));
+  //hide for keyword
+  keywordHideImages();
 }
 
 const sortImagesByChecked = (title, horns) => {
@@ -71,14 +74,10 @@ const sortImagesByChecked = (title, horns) => {
   return tempImages;
 };
 
-
-setupPageFromData(currentJSONFilePath);
-
-
-// EVENT HANDLERS
-//filter functionality
-$('select').on('change', function() {
-  let keyword = $(this).val();
+function keywordHideImages(keyword = null){
+  if(!keyword){
+    keyword = $('select').val();
+  }
   if (keyword === 'default') {
     $('#photo-template')
       .children()
@@ -89,6 +88,16 @@ $('select').on('change', function() {
       .hide();
     $(`.${keyword}`).show();
   }
+}
+
+setupPageFromData(currentJSONFilePath);
+
+
+// EVENT HANDLERS
+//filter functionality
+$('select').on('change', function() {
+  let keyword = $(this).val();
+  keywordHideImages(keyword);
 });
 
 $('.pagination').on('click', function(e) {
